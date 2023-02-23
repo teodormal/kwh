@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Υπολογισμός ένδειξης μετρητή</title>
+  </head>
+  <body>
+    <h1>Υπολογισμός ένδειξης μετρητή</h1>
+    <form>
+      <label for="reading_date">Ημερομηνία τελευταίας ένδειξης:</label>
+      <input type="date" id="reading_date" name="reading_date"><br><br>
+      <label for="last_reading">Τελευταία ένδειξη:</label>
+      <input type="number" id="last_reading" name="last_reading"><br><br>
+      <label for="daily_consumption">Ημερήσια κατανάλωση:</label>
+      <input type="number" id="daily_consumption" name="daily_consumption"><br><br>
+      <input type="button" value="Calculate" onclick="calculateKWh()"><br><br>
+      <label for="result">Τελική ένδειξη:</label>
+      <output id="result" name="result"></output>
+      <p id="error_message"></p>
+    </form>
+
+    <script>
+      function calculateKWh() {
+        // Get the user's input values
+        const readingDate = new Date(document.getElementById("reading_date").value);
+        const lastReading = Number(document.getElementById("last_reading").value);
+        const dailyConsumption = Number(document.getElementById("daily_consumption").value);
+
+        // Check if the date is later than today
+        const today = new Date();
+        if (readingDate > today) {
+          document.getElementById("error_message").textContent = "Error: Λάθος ημερομηνία (ΕΙΣΑΙ ΜΑΛΑΚΑΣ?)";
+          return;
+        }
+
+        // Check if the daily consumption is negative
+        if (dailyConsumption < 0) {
+          document.getElementById("error_message").textContent = "Error: Αρνητική Ημερήσια ένδειξη";
+          return;
+        }
+		
+		if (lastReading < 0) {
+		  document.getElementById("error_message").textContent = "Error: Αρνητική τελευταία ένδειξη";
+		  return;
+		} 
+
+        // Calculate the number of days since the reading date
+        const daysSinceReading = Math.floor((today - readingDate) / (1000 * 60 * 60 * 24));
+
+        // Calculate the total kWh consumption
+        const totalConsumption = (lastReading + (daysSinceReading * dailyConsumption)).toFixed(0);
+
+        // Update the result output with the calculated value
+        document.getElementById("result").textContent = totalConsumption + " KWh";
+
+        // Clear any error messages
+        document.getElementById("error_message").textContent = "";
+      }
+    </script>
+  </body>
+</html>
